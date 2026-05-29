@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: fraudguard
+    runtime: node
+    buildCommand: cd backend && npm install && cd ../frontend-react && npm install && npm run build
+    startCommand: cd backend && node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
