@@ -3,12 +3,12 @@ export default function RangeSlider({ label, value, onChange }) {
 
   function handleLo(e) {
     const next = parseFloat(e.target.value)
-    onChange([next, Math.max(next, hi)])
+    onChange([Math.min(next, hi), hi])
   }
 
   function handleHi(e) {
     const next = parseFloat(e.target.value)
-    onChange([Math.min(lo, next), next])
+    onChange([lo, Math.max(lo, next)])
   }
 
   const midpoint = ((lo + hi) / 2).toFixed(1)
