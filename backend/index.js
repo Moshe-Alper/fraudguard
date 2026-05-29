@@ -17,7 +17,11 @@ function serveSpa(_req, res) {
   res.sendFile(path.join(distPath, 'index.html'))
 }
 
-app.get('*', serveSpa)
+app.get('*', (req, res, next) => {
+  const fs = require('fs')
+  if (fs.existsSync(path.join(distPath, 'index.html'))) serveSpa(req, res)
+  else next()
+})
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
