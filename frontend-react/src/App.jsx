@@ -31,7 +31,7 @@ export default function App() {
       const data = await getRecommendation(midpoints)
       setResult(data)
     } catch (err) {
-      setError('Something went wrong. Please try again.')
+      setError('משהו השתבש. אנא נסה שוב.')
     } finally {
       setLoading(false)
     }

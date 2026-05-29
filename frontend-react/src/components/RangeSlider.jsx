@@ -18,17 +18,17 @@ export default function RangeSlider({ label, value, onChange }) {
       <div className="range-slider__label">{label}</div>
       <div className="range-slider__tracks">
         <div className="range-slider__track">
-          <span>Low</span>
+          <span>נמוך</span>
           <input type="range" min="1" max="5" step="0.5" value={lo} onChange={handleLo} />
           <span>{lo}</span>
         </div>
         <div className="range-slider__track">
-          <span>High</span>
+          <span>גבוה</span>
           <input type="range" min="1" max="5" step="0.5" value={hi} onChange={handleHi} />
           <span>{hi}</span>
         </div>
       </div>
-      <div className="range-slider__midpoint">Midpoint: {midpoint}</div>
+      <div className="range-slider__midpoint">ממוצע: {midpoint}</div>
     </div>
   )
 }
