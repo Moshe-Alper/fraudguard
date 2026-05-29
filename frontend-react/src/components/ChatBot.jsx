@@ -24,12 +24,12 @@ function newId() { return `${Date.now()}-${Math.random()}` }
 function botMsg(content, extra = {}) { return { id: newId(), role: 'bot', type: 'text', content, ...extra } }
 function userMsg(content) { return { id: newId(), role: 'user', type: 'text', content } }
 
-const DEFAULT_ANSWERS = () => Array.from({ length: 12 }, () => [2, 4])
+const DEFAULT_ANSWERS = () => Array.from({ length: 12 }, () => 3)
 
 export default function ChatBot() {
   const [messages, setMessages] = useState([botMsg(GREETING)])
   const [currentIndex, setCurrentIndex] = useState(-1)
-  const [pendingRange, setPendingRange] = useState([2, 4])
+  const [pendingValue, setPendingValue] = useState(3)
   const [phase, setPhase] = useState('asking')
   const answersRef = useRef(DEFAULT_ANSWERS())
   const bottomRef = useRef(null)
@@ -49,12 +49,11 @@ export default function ChatBot() {
     setCurrentIndex(idx)
   }
 
-  async function onConfirm(range) {
-    answersRef.current[currentIndex] = range
-    const midpoint = ((range[0] + range[1]) / 2).toFixed(1)
+  async function onConfirm(value) {
+    answersRef.current[currentIndex] = value
     setMessages(prev => [
       ...prev,
-      userMsg(`בחרתי: ${midpoint} מתוך 5`),
+      userMsg(`בחרתי: ${value} מתוך 5`),
       { id: 'typing', role: 'bot', type: 'typing' },
     ])
 
@@ -63,12 +62,11 @@ export default function ChatBot() {
 
       if (currentIndex < 11) {
         pushQuestion(currentIndex + 1)
-        setPendingRange([2, 4])
+        setPendingValue(3)
       } else {
         setPhase('loading')
         try {
-          const midpoints = answersRef.current.map(([lo, hi]) => (lo + hi) / 2)
-          const data = await getRecommendation(midpoints)
+          const data = await getRecommendation(answersRef.current)
           setMessages(prev => [
             ...prev,
             botMsg('ניתחתי את תשובותיך. הנה ההמלצה שלי:'),
@@ -87,7 +85,7 @@ export default function ChatBot() {
     answersRef.current = DEFAULT_ANSWERS()
     setMessages([botMsg(GREETING)])
     setCurrentIndex(-1)
-    setPendingRange([2, 4])
+    setPendingValue(3)
     setPhase('asking')
     setTimeout(() => pushQuestion(0), 400)
   }
@@ -112,8 +110,8 @@ export default function ChatBot() {
       {phase === 'asking' && currentIndex >= 0 && (
         <ChatSliderInput
           questionIndex={currentIndex}
-          pendingRange={pendingRange}
-          onChange={setPendingRange}
+          pendingValue={pendingValue}
+          onChange={setPendingValue}
           onConfirm={onConfirm}
         />
       )}

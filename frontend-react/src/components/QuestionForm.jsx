@@ -102,7 +102,7 @@ export default function QuestionForm({
                 key={q.index}
                 label={q.label}
                 value={answers[q.index]}
-                onChange={(range) => onSliderChange(q.index, range)}
+                onChange={(val) => onSliderChange(q.index, val)}
               />
             ))}
           </section>
