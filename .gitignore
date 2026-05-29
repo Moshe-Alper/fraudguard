@@ -1,4 +1,4 @@
 node_modules/
-frontend-react/dist/
+backend/public/
 frontend-react/node_modules/
 backend/node_modules/

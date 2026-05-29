@@ -11,7 +11,7 @@ app.use(express.json())
 
 app.use('/api', recommendRouter)
 
-const distPath = path.join(__dirname, '../frontend-react/dist')
+const distPath = path.join(__dirname, 'public')
 app.use(express.static(distPath))
 function serveSpa(_req, res) {
   res.sendFile(path.join(distPath, 'index.html'))
