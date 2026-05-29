@@ -80,6 +80,51 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* robot avatar */
+.chat-bubble-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-2);
+}
+
+.chat-bubble-row--bot {
+  flex-direction: row-reverse;
+}
+
+.robot-avatar {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  color: var(--color-primary);
+}
+
+.robot-avatar svg {
+  width: 100%;
+  height: 100%;
+  animation: robot-float 2.4s ease-in-out infinite;
+}
+
+.robot-avatar .eye {
+  animation: robot-blink 3s ease-in-out infinite;
+}
+
+@keyframes robot-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes robot-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .robot-avatar svg,
+  .robot-avatar .eye {
+    animation: none;
+  }
+}
+
 /* result card override when inside a bubble */
 .chat-bubble--result .result-card {
   background: transparent;
