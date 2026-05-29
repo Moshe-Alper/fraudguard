@@ -26,3 +26,4 @@ use the skill serviceLayer
 - Use single quotes in JS
 - Use double quotes in HTML
 - All event handlers should be named like: `onSomething`
+- Normal functions and no arrows when not needed (such as: export function foo() {} instead of const foo = (){})
