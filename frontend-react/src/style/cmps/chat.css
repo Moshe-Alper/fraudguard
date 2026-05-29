@@ -25,14 +25,14 @@
 }
 
 .chat-bubble--bot {
-  align-self: flex-end;
+  align-self: flex-start;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-bottom-right-radius: var(--radius-sm);
 }
 
 .chat-bubble--user {
-  align-self: flex-start;
+  align-self: flex-end;
   background: var(--color-primary);
   color: #fff;
   border-bottom-left-radius: var(--radius-sm);
@@ -40,13 +40,13 @@
 
 .chat-bubble--result {
   max-width: 100%;
-  align-self: flex-end;
+  align-self: flex-start;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
 }
 
 .chat-bubble--typing {
-  align-self: flex-end;
+  align-self: flex-start;
   padding: var(--spacing-3) var(--spacing-4);
 }
 
@@ -88,7 +88,7 @@
 }
 
 .chat-bubble-row--bot {
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 .robot-avatar {
