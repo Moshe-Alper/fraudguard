@@ -5,7 +5,7 @@ export default function BonusAlerts({ bonuses }) {
 
   return (
     <div className="bonus-alerts">
-      <div className="bonus-alerts__title">Bonus Insights</div>
+      <div className="bonus-alerts__title">המלצות משלימות</div>
       {bonuses.map(bonus => (
         <div key={bonus.type} className="bonus-alert">
           <Lightbulb className="bonus-alert__icon" size={18} />

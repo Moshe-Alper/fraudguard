@@ -5,14 +5,14 @@ export default function ResultCard({ result, onReset }) {
   const max = 5
 
   const scoreRows = [
-    { label: 'Operational Efficiency', value: scores.operationalEfficiency, accent: false },
-    { label: 'Accuracy & Trust',        value: scores.accuracyAndTrust,      accent: true  },
+    { label: 'יעילות מבצעית',      value: scores.operationalEfficiency, accent: false },
+    { label: 'דיוק ואמון ניהולי',  value: scores.accuracyAndTrust,      accent: true  },
   ]
 
   return (
     <div className="result-card">
       <div>
-        <div className="result-card__badge">Recommendation</div>
+        <div className="result-card__badge">המלצה</div>
         <h2 className="result-card__title" style={{ marginTop: '0.5rem' }}>{recommendation}</h2>
       </div>
 
@@ -38,7 +38,7 @@ export default function ResultCard({ result, onReset }) {
       <div className="result-card__footer">
         <button className="btn btn-secondary" onClick={onReset}>
           <RotateCcw size={15} />
-          Reset
+          התחל מחדש
         </button>
       </div>
     </div>

@@ -1,19 +1,28 @@
 import RangeSlider from './RangeSlider'
 
 const QUESTIONS = [
-  { index: 0,  category: 'Operational', label: 'How critical is real-time response?' },
-  { index: 1,  category: 'Operational', label: 'How important is low processing latency?' },
-  { index: 2,  category: 'Managerial',  label: 'How important is verbal reasoning explainability?' },
-  { index: 3,  category: 'Managerial',  label: 'How important is algorithmic transparency?' },
-  { index: 4,  category: 'Economic',    label: 'How constrained is your hardware budget?' },
-  { index: 5,  category: 'Economic',    label: 'How important is minimizing ongoing operational costs?' },
-  { index: 6,  category: 'Technical',   label: 'How noisy is your input data?' },
-  { index: 7,  category: 'Technical',   label: 'How complex is audio-video synchronization in your use case?' },
-  { index: 8,  category: 'Strategic',   label: 'How important is technological independence?' },
-  { index: 9,  category: 'Strategic',   label: 'How critical is keeping data on-premises?' },
-  { index: 10, category: 'Quality',     label: 'How important is detection accuracy?' },
-  { index: 11, category: 'Quality',     label: 'How willing are you to trade resources for performance?' },
+  { index: 0,  category: 'Operational', label: 'עד כמה קריטית דרישת זמן אמת?' },
+  { index: 1,  category: 'Operational', label: 'עד כמה חשובה מהירות תגובה מקצה לקצה?' },
+  { index: 2,  category: 'Managerial',  label: 'עד כמה נדרש קומינ מילולי (ולא רק ציון)?' },
+  { index: 3,  category: 'Managerial',  label: 'עד כמה קריטית שקיפות אלגוריתמית?' },
+  { index: 4,  category: 'Economic',    label: 'עד כמה חמורה מגבלת התקציב לרכישת שרתים?' },
+  { index: 5,  category: 'Economic',    label: 'עד כמה חשוב לצמצם עלויות תפעול שוטפות?' },
+  { index: 6,  category: 'Technical',   label: 'האם נתוני השטח נוטים להיות "מלוכלכים"?' },
+  { index: 7,  category: 'Technical',   label: 'עד כמה מאתגר לסנכרן בין ערוצי המידע השונים?' },
+  { index: 8,  category: 'Strategic',   label: 'עד כמה חשוב לארגון להשתמש בקוד פתוח?' },
+  { index: 9,  category: 'Strategic',   label: 'עד כמה קריטי שמידע פנים-ארגוני יישאר בשרתי החברה?' },
+  { index: 10, category: 'Quality',     label: 'עד כמה גבוהי דיוק הם הערך הכי חשוב לחברה?' },
+  { index: 11, category: 'Quality',     label: 'האם הארגון מוכן להשקיע יותר זמן עיבוד כדי שלא יפספס הונאה?' },
 ]
+
+const CATEGORY_LABELS = {
+  Operational: 'ממד מבצעי (זמן אמת)',
+  Managerial:  'ממד ניהולי (הסברתיות ואמון)',
+  Economic:    'ממד כלכלי (תקציב ומשאבים)',
+  Technical:   'ממד טכני (סביבת עבודה)',
+  Strategic:   'ממד אסטרטגי (קוד פתוח ואבטחה)',
+  Quality:     'ממד איכותי (דיוק)',
+}
 
 const CATEGORIES = ['Operational', 'Managerial', 'Economic', 'Technical', 'Strategic', 'Quality']
 
@@ -23,7 +32,7 @@ export default function QuestionForm({ answers, onSliderChange, onSubmit, loadin
       <div className="flex-col gap-6">
         {CATEGORIES.map(cat => (
           <section key={cat} className="question-form__category">
-            <div className="question-form__category-title">{cat}</div>
+            <div className="question-form__category-title">{CATEGORY_LABELS[cat]}</div>
             {QUESTIONS.filter(q => q.category === cat).map(q => (
               <RangeSlider
                 key={q.index}
@@ -39,7 +48,7 @@ export default function QuestionForm({ answers, onSliderChange, onSubmit, loadin
 
         <div className="question-form__submit">
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Analysing…' : 'Get Recommendation'}
+            {loading ? 'מנתח...' : 'קבל המלצה'}
           </button>
         </div>
       </div>
