@@ -1,0 +1,42 @@
+.range-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.range-slider__label {
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.range-slider__tracks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.range-slider__track {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.range-slider__track span {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  width: 2.5rem;
+  flex-shrink: 0;
+}
+
+.range-slider__track input[type="range"] {
+  flex: 1;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.range-slider__midpoint {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: right;
+}

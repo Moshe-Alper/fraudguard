@@ -27,3 +27,4 @@ use the skill serviceLayer
 - Use double quotes in HTML
 - All event handlers should be named like: `onSomething`
 - Normal functions and no arrows when not needed (such as: export function foo() {} instead of const foo = (){})
+- When the handler receives the event object, name the parameter ev (not e or event).
