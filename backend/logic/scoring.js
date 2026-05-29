@@ -9,6 +9,11 @@ const RATIONALE = {
     'על פי מחקרם של Wu et al. (2023), גישה זו מבצעת הצלבת נתונים חזותיים וקוליים בתוך השכבות הנסתרות של הרשת הנירונית. מכיוון שהונאה היא תופעה פסיכולוגית מורכבת, מיזוג עמוק מאפשר לתפוס חוסר עקביות דק מאוד בין הערוצים ומבטיח את הדיוק המקסימלי. מאחר שסימנת שחשוב לך לקבל הסברים, המערכת משלבת שכבת בינה מלאכותית מסבירה (XAI) כפי שמוכיחים Mathur & Reichling (2023) — מתן נימוק ברור למנהל מעלה את האמון ואת נכונותו להסתמך על המערכת.',
 }
 
+const RECOMMENDATION_LABELS = {
+  'Late Fusion':         'מיזוג מאוחר (Late Fusion)',
+  'Deep Feature Fusion': 'מיזוג עמוק (Deep Feature Fusion)',
+}
+
 const BONUS_TEXTS = {
   knowledgeDistillation:
     'מומלץ לשלב טכנולוגיית זיקוק ידע – (Knowledge Distillation) לפי Karimi et al. (2022), תהליך זה מאפשר למודל \'סטודנט\' קטן ורזה להתאמן על בסיס מודל \'מורה\' מורכב, ובכך לחסוך עלויות תשתית עצומות מבלי לאבד דיוק.',
@@ -34,7 +39,7 @@ function calculateRecommendation(answers) {
   }
 
   return {
-    recommendation,
+    recommendation: RECOMMENDATION_LABELS[recommendation],
     rationale: RATIONALE[recommendation],
     scores: {
       operationalEfficiency: Math.round(operationalEfficiency * 100) / 100,
