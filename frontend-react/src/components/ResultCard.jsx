@@ -35,12 +35,14 @@ export default function ResultCard({ result, onReset }) {
         ))}
       </div>
 
-      <div className="result-card__footer">
-        <button className="btn btn-secondary" onClick={onReset}>
-          <RotateCcw size={15} />
-          התחל מחדש
-        </button>
-      </div>
+      {onReset && (
+        <div className="result-card__footer">
+          <button className="btn btn-secondary" onClick={onReset}>
+            <RotateCcw size={15} />
+            התחל מחדש
+          </button>
+        </div>
+      )}
     </div>
   )
 }
