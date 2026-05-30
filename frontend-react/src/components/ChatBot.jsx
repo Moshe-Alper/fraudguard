@@ -31,6 +31,7 @@ export default function ChatBot() {
   const [currentIndex, setCurrentIndex] = useState(-1)
   const [pendingValue, setPendingValue] = useState(3)
   const [phase, setPhase] = useState('asking')
+  const [isConfirming, setIsConfirming] = useState(false)
   const answersRef = useRef(DEFAULT_ANSWERS())
   const bottomRef = useRef(null)
 
@@ -50,6 +51,7 @@ export default function ChatBot() {
   }
 
   async function onConfirm(value) {
+    setIsConfirming(true)
     answersRef.current[currentIndex] = value
     setMessages(prev => [
       ...prev,
@@ -59,6 +61,7 @@ export default function ChatBot() {
 
     setTimeout(async () => {
       setMessages(prev => prev.filter(m => m.id !== 'typing'))
+      setIsConfirming(false)
 
       if (currentIndex < 11) {
         pushQuestion(currentIndex + 1)
@@ -113,6 +116,7 @@ export default function ChatBot() {
           pendingValue={pendingValue}
           onChange={setPendingValue}
           onConfirm={onConfirm}
+          disabled={isConfirming}
         />
       )}
     </div>
