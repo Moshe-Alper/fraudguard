@@ -64,7 +64,7 @@ const DEFAULT_ANSWERS = () => Array.from({ length: TOTAL_QUESTIONS }, () => 3)
 
 export default function ChatBot() {
   const [messages, setMessages] = useState([botMsg(GREETING)])
-  const [phase, setPhase] = useState('opening')
+  const [phase, setPhase] = useState('start')
   const [activePath, setActivePath] = useState(null)
   const [questionIndex, setQuestionIndex] = useState(-1)
   const [pendingValue, setPendingValue] = useState(3)
@@ -77,13 +77,21 @@ export default function ChatBot() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  useEffect(() => {
-    const t = setTimeout(() => {
-      setMessages(prev => [...prev, botMsg(OPENING.question)])
-    }, 400)
-    return () => clearTimeout(t)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  function startFlow() {
+    setMessages(prev => [
+      ...prev,
+      userMsg('כן, בואו נתחיל!'),
+      { id: 'typing', role: 'bot', type: 'typing' },
+    ])
+    setTimeout(() => {
+      setMessages(prev => [
+        ...prev.filter(m => m.id !== 'typing'),
+        botMsg('מעולה! בואו נתחיל 🚀'),
+        botMsg(OPENING.question),
+      ])
+      setPhase('opening')
+    }, 600)
+  }
 
   function startPath(pathId) {
     const choiceLabel = OPENING.options.find(o => o.id === pathId).label
@@ -162,12 +170,9 @@ export default function ChatBot() {
     setActivePath(null)
     setQuestionIndex(-1)
     setPendingValue(3)
-    setPhase('opening')
+    setPhase('start')
     setRedirected(false)
     setIsConfirming(false)
-    setTimeout(() => {
-      setMessages(prev => [...prev, botMsg(OPENING.question)])
-    }, 400)
   }
 
   return (
@@ -186,6 +191,14 @@ export default function ChatBot() {
         )}
         <div ref={bottomRef} />
       </div>
+
+      {phase === 'start' && (
+        <div className="chat-input-dock">
+          <button className="btn btn-primary" onClick={startFlow}>
+            כן, בואו נתחיל!
+          </button>
+        </div>
+      )}
 
       {phase === 'opening' && (
         <div className="chat-input-dock chat-input-dock--choices">
