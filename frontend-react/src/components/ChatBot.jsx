@@ -152,7 +152,7 @@ export default function ChatBot() {
           const data = await getRecommendation(activePath, answersRef.current, redirected)
           setMessages(prev => [
             ...prev,
-            botMsg('ניתחתי את תשובותיך. הנה ההמלצה שלי:'),
+            botMsg(data.summaryText),
             botMsg(null, { type: 'result', resultData: data, bonusData: data.bonuses }),
           ])
           setPhase('done')
