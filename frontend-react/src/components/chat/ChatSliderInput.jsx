@@ -3,7 +3,7 @@ import RangeSlider from '../RangeSlider'
 export default function ChatSliderInput({ questionIndex, pendingValue, onChange, onConfirm, disabled }) {
   return (
     <div className="chat-input-dock">
-      <div className="chat-input-dock__hint">שאלה {questionIndex + 1} מתוך 12</div>
+      <div className="chat-input-dock__hint">שאלה {questionIndex + 1} מתוך 7</div>
       <RangeSlider label="" value={pendingValue} onChange={onChange} />
       <button className="btn btn-primary" onClick={() => onConfirm(pendingValue)} disabled={disabled}>
         אשר

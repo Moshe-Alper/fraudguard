@@ -21,14 +21,16 @@ const BONUS_TEXTS = {
     'מומלץ לבסס את המערכת על מודלים בקוד פתוח – (Open-Source LLM) על פי Zhu et al. (2023), שימוש במודלים פתוחים (כמו Llama 3) משחרר את הארגון מתלות יקרה בספקים חיצוניים ומבטיח ריבונות ואבטחת מידע פנים-ארגונית קשיחה.',
 }
 
-function calculateRecommendation(answers) {
-  const operationalEfficiency = avg(answers, [0, 1, 4, 5, 6, 7])
-  const accuracyAndTrust = avg(answers, [2, 3, 10, 11])
-  const economic = avg(answers, [4, 5])
-  const strategic = avg(answers, [8, 9])
+function calculateRecommendation({ path, answers }) {
+  const recKey = path === 'path1' ? 'Late Fusion' : 'Deep Feature Fusion'
 
-  const recommendation =
-    operationalEfficiency > accuracyAndTrust ? 'Late Fusion' : 'Deep Feature Fusion'
+  // Q4–Q5 (indices 3–4): budget/maintenance or precision/processing — knowledge distillation signal
+  const economic = avg(answers, [3, 4])
+  // Q6–Q7 (indices 5–6): field conditions/sync or open-source/privacy — strategic signal
+  const strategic = avg(answers, [5, 6])
+
+  const operationalEfficiency = avg(answers, [0, 1, 3, 4, 5, 6])
+  const accuracyAndTrust = avg(answers, [1, 2, 3, 4])
 
   const bonuses = []
   if (economic >= 4) {
@@ -39,8 +41,8 @@ function calculateRecommendation(answers) {
   }
 
   return {
-    recommendation: RECOMMENDATION_LABELS[recommendation],
-    rationale: RATIONALE[recommendation],
+    recommendation: RECOMMENDATION_LABELS[recKey],
+    rationale: RATIONALE[recKey],
     scores: {
       operationalEfficiency: Math.round(operationalEfficiency * 100) / 100,
       accuracyAndTrust: Math.round(accuracyAndTrust * 100) / 100,
@@ -52,4 +54,3 @@ function calculateRecommendation(answers) {
 }
 
 module.exports = { calculateRecommendation }
-

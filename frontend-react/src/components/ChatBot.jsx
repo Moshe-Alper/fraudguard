@@ -3,34 +3,72 @@ import { getRecommendation } from '../services/recommend.service'
 import ChatMessage from './chat/ChatMessage'
 import ChatSliderInput from './chat/ChatSliderInput'
 
-const QUESTIONS = [
-  { index: 0,  label: 'עד כמה קריטית דרישת זמן אמת?' },
-  { index: 1,  label: 'עד כמה חשובה מהירות תגובה מקצה לקצה?' },
-  { index: 2,  label: 'עד כמה נדרש קומינ מילולי (ולא רק ציון)?' },
-  { index: 3,  label: 'עד כמה קריטית שקיפות אלגוריתמית?' },
-  { index: 4,  label: 'עד כמה חמורה מגבלת התקציב לרכישת שרתים?' },
-  { index: 5,  label: 'עד כמה חשוב לצמצם עלויות תפעול שוטפות?' },
-  { index: 6,  label: 'האם נתוני השטח נוטים להיות "מלוכלכים"?' },
-  { index: 7,  label: 'עד כמה מאתגר לסנכרן בין ערוצי המידע השונים?' },
-  { index: 8,  label: 'עד כמה חשוב לארגון להשתמש בקוד פתוח?' },
-  { index: 9,  label: 'עד כמה קריטי שמידע פנים-ארגוני יישאר בשרתי החברה?' },
-  { index: 10, label: 'עד כמה גבוהי דיוק הם הערך הכי חשוב לחברה?' },
-  { index: 11, label: 'האם הארגון מוכן להשקיע יותר זמן עיבוד כדי שלא יפספס הונאה?' },
-]
+const GREETING = 'שלום! אני FraudGuard, כאן לעזור לך לבחור את הארכיטקטורה המתאימה לזיהוי הונאה. נתחיל בשאלה אחת חשובה שתכוון אותנו לכיוון הנכון עבורך.'
 
-const GREETING = 'שלום! אני FraudGuard, כאן לעזור לך לבחור את הארכיטקטורה המתאימה לזיהוי הונאה. אשאל אותך 12 שאלות קצרות — כל אחת מדורגת בסולם 1–5.'
+const OPENING = {
+  question: 'מעולה! נתחיל בהחלטה הגדולה ביותר של הארגון שלך. לא רוצים לבזבז לך זמן! מהי "האמינות" המרכזית של החברה שלך שצריכה להיות מוכחת בזמן אמת דרך וידאו?',
+  options: [
+    {
+      id: 'path1',
+      label: 'ביצוע, יעילות ומהירות',
+      description: 'המערכת צריכה לעבוד מהר, לתת התרעות מיידיות (בשניות), ולא להציג אחוזים אלא אינדיקציה ברורה',
+    },
+    {
+      id: 'path2',
+      label: 'דיוק, אמינות ואסטרטגיה',
+      description: 'מעקב מדויק ומפורט עם שקיפות מלאה, מנהלים צריכים להבין ולסמוך ולקבל הסברים ברורים',
+    },
+  ],
+}
+
+const PATHS = {
+  path1: {
+    questions: [
+      'עד כמה חשוב לך לזהות שקרים בזמן אמת במהלך שידור חי, ולאמת זאת מיידית במקום להמתין לבדיקת מסד נתונים?',
+      'עד כמה חשוב שהמערכת תספק משוב ויזואלי מיידי (בתוך שניות) כשהיא מזהה שמשהו לא תקין?',
+      'עד כמה חשוב לך לקבל הסבר ברור במילים (לדוגמה: "המערכת חושבת שהם משקרים") במקום רק אחוזים או מדדים מספריים?',
+      'עד כמה מחמירה ומוגבלת מגבלת התקציב שלך לרכישת חומרה יקרה ו-GPUs חזקים?',
+      'עד כמה חשוב לך לשמור על עלויות תחזוקה שוטפות ואימון מודלים קטנים?',
+      'האם ההצגות שלך מתרחשות בתנאי שטח קשים (אינטרנט גרוע, שמע גרוע, וידאו מבולגן)?',
+      'עד כמה מורכב הצורך שלך בסנכרון טכני בין מקורות מידע (יישור מדויק בין גוון קול ופנים)?',
+    ],
+    redirectAt: 2,
+    redirectThreshold: 4,
+    redirectTo: 'path2',
+    redirectMsg: 'רגע, עצרתי את הבוט — שמנו לב שאתה מדגיש הסברים ברורים, שהם קריטיים עבורך! אני מעביר אותך לפתרון שמראה לך בדיוק מה המודל מזהה. המודל עובד כמו קופסה שחורה — הוא יכול לזהות דברים או לטעות ואנחנו לא יכולים לראות למה. ואני רוצה לעזור לך להבין את האמון האמיתי של המנהלים, ולעבור להגדרה שמראה לך מה באמת עומד על הפרק...',
+  },
+  path2: {
+    questions: [
+      'עד כמה חשוב לך לקבל הסברים ברורים במילים (לדוגמה: "המערכת חושבת שהם משקרים") במקום רק אחוזים או מדדים מספריים?',
+      'עד כמה קריטי שהמנהלים שלך יבינו איך המערכת הגיעה להחלטתה, ולא יקבלו החלטה סגורה מ"קופסה שחורה"?',
+      'עד כמה מחמיר ומוגבל התקציב שלך לרכישת חומרה יקרה ו-GPUs חזקים?',
+      'עד כמה חשוב להתאים לדיוק מקסימלי (אפילו בתנאים קשים) כערך הכי קריטי?',
+      'האם תהיה מוכן לעבוד עם זמן עיבוד ארוך יותר או כוח חישובי חזק יותר?',
+      'עד כמה חשוב לך שהמערכת מבוססת על קוד פתוח, ולא תלויה בשירותים חיצוניים?',
+      'עד כמה קריטי שהחיישנים וההקלטות נשמרים רק בתוך הצוות שלך, ולא יוצאים לשירותים חיצוניים?',
+    ],
+    redirectAt: 2,
+    redirectThreshold: 4,
+    redirectTo: 'path1',
+    redirectMsg: 'חשיבה טובה! חישוב חדש בוצע בלולאה הזו. זה מאותת לי שאתה רוצה את המודלים המדויקים והעמוקים ביותר, אבל התקציב שלך מחמיר בכל הנוגע לחומרה יקרה. מודלים עמוקים הם כבדים ויקרים מאוד. אני מעביר אותנו לחלק היעילות — בואו נבדוק מה באמת עומד על הפרק על בסיס התנאים שלך...',
+  },
+}
+
+const TOTAL_QUESTIONS = 7
 
 function newId() { return `${Date.now()}-${Math.random()}` }
 function botMsg(content, extra = {}) { return { id: newId(), role: 'bot', type: 'text', content, ...extra } }
 function userMsg(content) { return { id: newId(), role: 'user', type: 'text', content } }
 
-const DEFAULT_ANSWERS = () => Array.from({ length: 12 }, () => 3)
+const DEFAULT_ANSWERS = () => Array.from({ length: TOTAL_QUESTIONS }, () => 3)
 
 export default function ChatBot() {
   const [messages, setMessages] = useState([botMsg(GREETING)])
-  const [currentIndex, setCurrentIndex] = useState(-1)
+  const [phase, setPhase] = useState('opening')
+  const [activePath, setActivePath] = useState(null)
+  const [questionIndex, setQuestionIndex] = useState(-1)
   const [pendingValue, setPendingValue] = useState(3)
-  const [phase, setPhase] = useState('asking')
+  const [redirected, setRedirected] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
   const answersRef = useRef(DEFAULT_ANSWERS())
   const bottomRef = useRef(null)
@@ -40,19 +78,34 @@ export default function ChatBot() {
   }, [messages])
 
   useEffect(() => {
-    const t = setTimeout(() => pushQuestion(0), 400)
+    const t = setTimeout(() => {
+      setMessages(prev => [...prev, botMsg(OPENING.question)])
+    }, 400)
     return () => clearTimeout(t)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function pushQuestion(idx) {
-    setMessages(prev => [...prev, botMsg(QUESTIONS[idx].label)])
-    setCurrentIndex(idx)
+  function startPath(pathId) {
+    const choiceLabel = OPENING.options.find(o => o.id === pathId).label
+    setActivePath(pathId)
+    setMessages(prev => [
+      ...prev,
+      userMsg(`בחרתי: ${choiceLabel}`),
+      { id: 'typing', role: 'bot', type: 'typing' },
+    ])
+    setTimeout(() => {
+      setMessages(prev => [
+        ...prev.filter(m => m.id !== 'typing'),
+        botMsg(PATHS[pathId].questions[0]),
+      ])
+      setQuestionIndex(0)
+      setPhase('asking')
+    }, 600)
   }
 
   async function onConfirm(value) {
     setIsConfirming(true)
-    answersRef.current[currentIndex] = value
+    answersRef.current[questionIndex] = value
     setMessages(prev => [
       ...prev,
       userMsg(`בחרתי: ${value} מתוך 5`),
@@ -61,15 +114,34 @@ export default function ChatBot() {
 
     setTimeout(async () => {
       setMessages(prev => prev.filter(m => m.id !== 'typing'))
-      setIsConfirming(false)
 
-      if (currentIndex < 11) {
-        pushQuestion(currentIndex + 1)
+      const path = PATHS[activePath]
+      const isRedirectPoint =
+        questionIndex === path.redirectAt &&
+        value >= path.redirectThreshold &&
+        !redirected
+
+      if (isRedirectPoint) {
+        const newPathId = path.redirectTo
+        setRedirected(true)
+        setActivePath(newPathId)
+        setMessages(prev => [...prev, botMsg(path.redirectMsg)])
+        // isConfirming stays true until new question appears to block slider interaction
+        setTimeout(() => {
+          setMessages(prev => [...prev, botMsg(PATHS[newPathId].questions[3])])
+          setQuestionIndex(3)
+          setPendingValue(3)
+          setIsConfirming(false)
+        }, 900)
+      } else if (questionIndex < TOTAL_QUESTIONS - 1) {
+        setMessages(prev => [...prev, botMsg(PATHS[activePath].questions[questionIndex + 1])])
+        setQuestionIndex(questionIndex + 1)
         setPendingValue(3)
+        setIsConfirming(false)
       } else {
         setPhase('loading')
         try {
-          const data = await getRecommendation(answersRef.current)
+          const data = await getRecommendation(activePath, answersRef.current, redirected)
           setMessages(prev => [
             ...prev,
             botMsg('ניתחתי את תשובותיך. הנה ההמלצה שלי:'),
@@ -87,10 +159,15 @@ export default function ChatBot() {
   function onReset() {
     answersRef.current = DEFAULT_ANSWERS()
     setMessages([botMsg(GREETING)])
-    setCurrentIndex(-1)
+    setActivePath(null)
+    setQuestionIndex(-1)
     setPendingValue(3)
-    setPhase('asking')
-    setTimeout(() => pushQuestion(0), 400)
+    setPhase('opening')
+    setRedirected(false)
+    setIsConfirming(false)
+    setTimeout(() => {
+      setMessages(prev => [...prev, botMsg(OPENING.question)])
+    }, 400)
   }
 
   return (
@@ -110,9 +187,24 @@ export default function ChatBot() {
         <div ref={bottomRef} />
       </div>
 
-      {phase === 'asking' && currentIndex >= 0 && (
+      {phase === 'opening' && (
+        <div className="chat-input-dock chat-input-dock--choices">
+          {OPENING.options.map(option => (
+            <button
+              key={option.id}
+              className="btn btn-choice"
+              onClick={() => startPath(option.id)}
+            >
+              <span className="btn-choice__label">{option.label}</span>
+              <span className="btn-choice__desc">{option.description}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {phase === 'asking' && questionIndex >= 0 && (
         <ChatSliderInput
-          questionIndex={currentIndex}
+          questionIndex={questionIndex}
           pendingValue={pendingValue}
           onChange={setPendingValue}
           onConfirm={onConfirm}
