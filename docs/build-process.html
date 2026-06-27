@@ -1,388 +1,585 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FraudGuard — תהליך הבניה והפרומפטים</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FraudGuard — תהליך הבניה והפרומפטים</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 9.5pt;
-    line-height: 1.45;
-    color: #1e1b4b;
-    background: #fff;
-    direction: rtl;
-  }
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 9.5pt;
+        line-height: 1.45;
+        color: #1e1b4b;
+        background: #fff;
+        direction: rtl;
+      }
 
-  .page {
-    width: 210mm;
-    min-height: 297mm;
-    margin: 0 auto;
-    padding: 12mm 14mm 10mm;
-  }
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        padding: 12mm 14mm 10mm;
+      }
 
-  /* ── Header ── */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid #6366f1;
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-  }
-  .header-title { font-size: 17pt; font-weight: 800; color: #6366f1; letter-spacing: -0.5px; }
-  .header-sub { font-size: 8.5pt; color: #6b7280; text-align: left; }
-  .badge {
-    background: #6366f1;
-    color: #fff;
-    font-size: 7pt;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
-    letter-spacing: 0.3px;
-  }
+      /* ── Header ── */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid #6366f1;
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+      }
+      .header-title {
+        font-size: 17pt;
+        font-weight: 800;
+        color: #6366f1;
+        letter-spacing: -0.5px;
+      }
+      .header-sub {
+        font-size: 8.5pt;
+        color: #6b7280;
+        text-align: left;
+      }
+      .badge {
+        background: #6366f1;
+        color: #fff;
+        font-size: 7pt;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+        letter-spacing: 0.3px;
+      }
 
-  /* ── Layout: two columns ── */
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .grid-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
+      /* ── Layout: two columns ── */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
 
-  /* ── Section cards ── */
-  .card {
-    border: 1px solid #e0e7ff;
-    border-radius: 7px;
-    padding: 8px 10px;
-    background: #f8f7ff;
-  }
-  .card.full { grid-column: 1 / -1; }
+      /* ── Section cards ── */
+      .card {
+        border: 1px solid #e0e7ff;
+        border-radius: 7px;
+        padding: 8px 10px;
+        background: #f8f7ff;
+      }
+      .card.full {
+        grid-column: 1 / -1;
+      }
 
-  h2 {
-    font-size: 9pt;
-    font-weight: 700;
-    color: #4f46e5;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  h2::before {
-    content: '';
-    display: inline-block;
-    width: 3px;
-    height: 11px;
-    background: #6366f1;
-    border-radius: 2px;
-  }
+      h2 {
+        font-size: 9pt;
+        font-weight: 700;
+        color: #4f46e5;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      h2::before {
+        content: "";
+        display: inline-block;
+        width: 3px;
+        height: 11px;
+        background: #6366f1;
+        border-radius: 2px;
+      }
 
-  /* ── Steps ── */
-  .steps { display: flex; flex-direction: column; gap: 5px; }
-  .step {
-    display: flex;
-    gap: 7px;
-    align-items: flex-start;
-  }
-  .step-num {
-    background: #6366f1;
-    color: #fff;
-    font-weight: 700;
-    font-size: 7.5pt;
-    min-width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .step-body strong { font-size: 8.5pt; color: #312e81; }
-  .step-body span { color: #4b5563; font-size: 8pt; display: block; }
+      /* ── Steps ── */
+      .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .step {
+        display: flex;
+        gap: 7px;
+        align-items: flex-start;
+      }
+      .step-num {
+        background: #6366f1;
+        color: #fff;
+        font-weight: 700;
+        font-size: 7.5pt;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .step-body strong {
+        font-size: 8.5pt;
+        color: #312e81;
+      }
+      .step-body span {
+        color: #4b5563;
+        font-size: 8pt;
+        display: block;
+      }
 
-  /* ── Tech table ── */
-  table { width: 100%; border-collapse: collapse; font-size: 8pt; }
-  td { padding: 3px 6px; border-bottom: 1px solid #e0e7ff; }
-  td:first-child { font-weight: 600; color: #4f46e5; white-space: nowrap; }
-  tr:last-child td { border-bottom: none; }
+      /* ── Tech table ── */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8pt;
+      }
+      td {
+        padding: 3px 6px;
+        border-bottom: 1px solid #e0e7ff;
+      }
+      td:first-child {
+        font-weight: 600;
+        color: #4f46e5;
+        white-space: nowrap;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
 
-  /* ── Question lists ── */
-  .q-list { list-style: none; padding: 0; }
-  .q-list li {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 4px;
-    font-size: 8pt;
-    align-items: flex-start;
-  }
-  .q-num {
-    background: #e0e7ff;
-    color: #4338ca;
-    font-weight: 700;
-    font-size: 7pt;
-    min-width: 16px;
-    height: 16px;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
+      /* ── Question lists ── */
+      .q-list {
+        list-style: none;
+        padding: 0;
+      }
+      .q-list li {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 4px;
+        font-size: 8pt;
+        align-items: flex-start;
+      }
+      .q-num {
+        background: #e0e7ff;
+        color: #4338ca;
+        font-weight: 700;
+        font-size: 7pt;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
 
-  /* ── Opening choices ── */
-  .choices { display: flex; flex-direction: column; gap: 4px; }
-  .choice {
-    border: 1px solid #c7d2fe;
-    border-radius: 5px;
-    padding: 5px 8px;
-    background: #fff;
-    font-size: 7.8pt;
-  }
-  .choice-id { font-size: 6.5pt; font-weight: 700; color: #6366f1; margin-bottom: 1px; }
+      /* ── Opening choices ── */
+      .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .choice {
+        border: 1px solid #c7d2fe;
+        border-radius: 5px;
+        padding: 5px 8px;
+        background: #fff;
+        font-size: 7.8pt;
+      }
+      .choice-id {
+        font-size: 6.5pt;
+        font-weight: 700;
+        color: #6366f1;
+        margin-bottom: 1px;
+      }
 
-  /* ── Redirect box ── */
-  .redirect {
-    background: #fef3c7;
-    border: 1px solid #fcd34d;
-    border-radius: 5px;
-    padding: 5px 8px;
-    font-size: 7.5pt;
-    color: #78350f;
-    margin-top: 6px;
-  }
-  .redirect strong { display: block; margin-bottom: 2px; font-size: 7.5pt; }
+      /* ── Redirect box ── */
+      .redirect {
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+        border-radius: 5px;
+        padding: 5px 8px;
+        font-size: 7.5pt;
+        color: #78350f;
+        margin-top: 6px;
+      }
+      .redirect strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 7.5pt;
+      }
 
-  /* ── Result section ── */
-  .results { display: flex; flex-direction: column; gap: 5px; }
-  .result-item { font-size: 8pt; }
-  .result-item strong { color: #4f46e5; }
+      /* ── Result section ── */
+      .results {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .result-item {
+        font-size: 8pt;
+      }
+      .result-item strong {
+        color: #4f46e5;
+      }
 
-  /* ── AI Prompts ── */
-  .ai-rules { list-style: none; padding: 0; }
-  .ai-rules li {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 3px;
-    font-size: 7.8pt;
-    align-items: flex-start;
-  }
-  .ai-rules li::before {
-    content: '→';
-    color: #6366f1;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
+      /* ── AI Prompts ── */
+      .ai-rules {
+        list-style: none;
+        padding: 0;
+      }
+      .ai-rules li {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 3px;
+        font-size: 7.8pt;
+        align-items: flex-start;
+      }
+      .ai-rules li::before {
+        content: "→";
+        color: #6366f1;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
 
-  /* ── Footer ── */
-  .footer {
-    border-top: 1px solid #e0e7ff;
-    padding-top: 5px;
-    margin-top: 8px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 7pt;
-    color: #9ca3af;
-  }
+      /* ── Footer ── */
+      .footer {
+        border-top: 1px solid #e0e7ff;
+        padding-top: 5px;
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 7pt;
+        color: #9ca3af;
+      }
 
-  /* ── Print ── */
-  @media print {
-    body { font-size: 9pt; }
-    .page { padding: 10mm 12mm 8mm; margin: 0; width: 100%; }
-    @page { size: A4; margin: 0; }
-  }
-</style>
-</head>
-<body>
-<div class="page">
-
-  <!-- Header -->
-  <div class="header">
-    <div>
-      <div class="header-title">FraudGuard</div>
-      <div style="font-size:8pt;color:#6b7280;margin-top:2px;">תהליך הבניה והפרומפטים של הבוט</div>
-    </div>
-    <div style="text-align:left;">
-      <div class="badge">Decision Support Bot</div>
-      <div class="header-sub" style="margin-top:4px;">יוני 2025 · React + Node.js + Express · Render</div>
-    </div>
-  </div>
-
-  <!-- Row 1: Build Process + Tech Stack -->
-  <div class="grid">
-
-    <div class="card">
-      <h2>תהליך הבניה</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <strong>Backend — לוגיקת המלצה</strong>
-            <span>נקודת קצה <code>POST /api/recommend</code> + חישוב 4 ציונים (אופרציונלי, דיוק, כלכלי, אסטרטגי) וחוקי החלטה לבחירת ארכיטקטורה.</span>
+      /* ── Print ── */
+      @media print {
+        body {
+          font-size: 9pt;
+        }
+        .page {
+          padding: 10mm 12mm 8mm;
+          margin: 0;
+          width: 100%;
+        }
+        @page {
+          size: A4;
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- Header -->
+      <div class="header">
+        <div>
+          <div class="header-title">FraudGuard</div>
+          <div style="font-size: 8pt; color: #6b7280; margin-top: 2px">
+            תהליך הבניה והפרומפטים של הבוט
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <strong>Frontend — טופס שאלות</strong>
-            <span>12 שאלות עם range sliders (1–5), חישוב midpoint, שליחה ל-API והצגת ResultCard + BonusAlerts.</span>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <strong>Hebrew Localization</strong>
-            <span>תרגום מלא לעברית, RTL layout, כל טקסטי הממשק, השאלות וההמלצות.</span>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body">
-            <strong>ChatBot UI</strong>
-            <span>המרת הטופס לחוויית צ'אט WhatsApp-style: שאלה אחת בכל פעם, slider dock תחתון, מסלולים דינמיים ו-redirect חכם.</span>
+        <div style="text-align: left">
+          <div class="badge">Decision Support Bot</div>
+          <div class="header-sub" style="margin-top: 4px">
+            יוני 2025 · React + Node.js + Express · Render
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="card">
-      <h2>Tech Stack ולוגיקת החלטה</h2>
-      <table>
-        <tr><td>Frontend</td><td>React 18 + Vite + Lucide Icons</td></tr>
-        <tr><td>Backend</td><td>Node.js + Express (stateless)</td></tr>
-        <tr><td>Deployment</td><td>Render — שרת יחיד, API + static</td></tr>
-        <tr><td>בסיס נתונים</td><td>אין — fully stateless per session</td></tr>
-      </table>
-      <div style="margin-top:8px;">
-        <table>
-          <tr><td>Operational Efficiency &gt; Accuracy &amp; Trust</td><td>→ Late Fusion</td></tr>
-          <tr><td>Accuracy &amp; Trust ≥ Operational</td><td>→ Deep Feature Fusion</td></tr>
-          <tr><td>Economic avg ≥ 4</td><td>→ + Knowledge Distillation</td></tr>
-          <tr><td>Strategic avg ≥ 4</td><td>→ + Open-Source LLM</td></tr>
-        </table>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Row 2: Prompts — full width header + two columns -->
-  <div class="card full" style="margin-bottom:10px;">
-    <h2>פרומפטים הבוט — שאלות הפתיחה</h2>
-
-    <div style="margin-bottom:6px;">
-      <strong style="font-size:8pt;color:#312e81;">ברכת פתיחה (Greeting):</strong>
-      <span style="font-size:8pt;color:#374151;"> "שלום! אני FraudGuard, כאן לעזור לך לבחור את הארכיטקטורה המתאימה לזיהוי הונאה. נתחיל בשאלה אחת חשובה שתכוון אותנו לכיוון הנכון עבורך."</span>
-    </div>
-
-    <div style="margin-bottom:6px;">
-      <strong style="font-size:8pt;color:#312e81;">שאלת מסלול (Opening):</strong>
-      <span style="font-size:8pt;color:#374151;"> "היי! כדי שלא נבזבז זמן יקר, בוא נתחיל מההחלטה הכי גדולה... מהו ה'אני מאמין' המרכזי של החברה שלכם?"</span>
-    </div>
-
-    <div class="choices">
-      <div class="choice">
-        <div class="choice-id">מסלול 1 — יעילות אופרציונלית</div>
-        "הכי חשוב לנו שהמערכת תעבוד מהר, תגיב בשבריר שנייה ולא תקרע לנו את הכיס"
-      </div>
-      <div class="choice">
-        <div class="choice-id">מסלול 2 — דיוק ואמון</div>
-        "הכי חשוב לנו דיוק מוחלט במעבדה, ושקיפות מלאה כדי שהמנהלים יבינו ויסמכו על המסקנות"
-      </div>
-    </div>
-  </div>
-
-  <!-- Row 3: Two path questions side by side -->
-  <div class="grid">
-
-    <div class="card">
-      <h2>מסלול 1 — 7 שאלות (יעילות)</h2>
-      <ul class="q-list">
-        <li><span class="q-num">1</span>עד כמה דחוף לכם לתפוס את השקר בשידור חי תוך כדי השיחה (כמו זום), ולא בדיעבד?</li>
-        <li><span class="q-num">2</span>עד כמה חשוב לכם שהמערכת תיתן התראה מיידית (בשבריר שנייה) ברגע שמזהה חוסר אמינות?</li>
-        <li><span class="q-num">3</span>עד כמה חשוב לכם לקבל הסבר ברור במילים (ולא רק ציון יבש באחוזים)?</li>
-        <li><span class="q-num">4</span>עד כמה מחמיר ומוגבל התקציב שלכם לרכישת שרתים יקרים וכרטיסי מסך (GPUs)?</li>
-        <li><span class="q-num">5</span>עד כמה חשוב לכם לשמור על עלויות תחזוקה והרצת מודלים נמוכות ביומיום?</li>
-        <li><span class="q-num">6</span>האם הראיונות שלכם מתבצעים בתנאי שטח קשים (רעשי רקע, אינטרנט חלש, וידאו מטושטש)?</li>
-        <li><span class="q-num">7</span>עד כמה מאתגר הצורך שלכם לסנכרן בין ערוצי מידע (קול מול פנים) בשבריר שנייה?</li>
-      </ul>
-      <div class="redirect">
-        <strong>הודעת מעבר למסלול 2 (אם שאלה 3 ≥ 4):</strong>
-        "הופס, עצרתי רגע! שמתי לב שסימנת שהסבר מילולי ושקיפות הם קריטיים עבורכם! בארכיטקטורה מהירה וזולה, מנהלים בדרך כלל לא מקבלים הסברים כאלו... אני מנתב אותנו למסלול הניהולי והאמון."
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>מסלול 2 — 7 שאלות (דיוק ואמון)</h2>
-      <ul class="q-list">
-        <li><span class="q-num">1</span>עד כמה חשוב לכם לקבל הסבר ברור במילים (ולא רק ציון יבש באחוזים)?</li>
-        <li><span class="q-num">2</span>עד כמה קריטי למנהלים שלכם להבין איך המערכת הגיעה למסקנה, ולא מ'קופסה שחורה'?</li>
-        <li><span class="q-num">3</span>עד כמה מחמיר ומוגבל התקציב שלכם לרכישת שרתים יקרים וכרטיסי מסך (GPUs)?</li>
-        <li><span class="q-num">4</span>עד כמה השאיפה לאחוזי דיוק מקסימליים (אפילו בתנאי מעבדה) היא הערך החשוב ביותר?</li>
-        <li><span class="q-num">5</span>האם תהיו מוכנים 'לשלם' בזמן עיבוד ארוך יותר, ובלבד שלא נפספס אף ניסיון מרמה?</li>
-        <li><span class="q-num">6</span>עד כמה חשוב לכם שהמערכת תתבסס על קוד פתוח, כדי שלא תהיו תלויים בחברות ענק חיצוניות?</li>
-        <li><span class="q-num">7</span>עד כמה קריטי שהסרטונים וההקלטות הרגישות יעובדו רק בתוך שרתי החברה שלכם?</li>
-      </ul>
-      <div class="redirect">
-        <strong>הודעת מעבר למסלול 1 (אם שאלה 3 ≥ 4):</strong>
-        "חכה, בוא נעשה חישוב מסלול מחדש! רציתם מודלים מדויקים ועמוקים, אבל עכשיו סימנת מגבלת תקציב... אני מעביר אותנו לנתיב היעילות והחיסכון."
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Row 4: Results + AI Build Prompts -->
-  <div class="grid">
-
-    <div class="card">
-      <h2>תוצאות הסיווג ובונוסים</h2>
-      <div class="results">
-        <div class="result-item">
-          <strong>Late Fusion (מיזוג מאוחר):</strong> כאשר Operational Efficiency &gt; Accuracy &amp; Trust — מהיר, זול, עמיד לרעשים, מגיב בשבריר שנייה.
+      <!-- Row 1: Build Process + Tech Stack -->
+      <div class="grid">
+        <div class="card">
+          <h2>תהליך הבניה</h2>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <strong>Backend — לוגיקת המלצה</strong>
+                <span
+                  >נקודת קצה <code>POST /api/recommend</code> + חישוב 4 ציונים
+                  (אופרציונלי, דיוק, כלכלי, אסטרטגי) וחוקי החלטה לבחירת
+                  ארכיטקטורה.</span
+                >
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <strong>Frontend — טופס שאלות</strong>
+                <span
+                  >12 שאלות עם range sliders (1–5), חישוב midpoint, שליחה ל-API
+                  והצגת ResultCard + BonusAlerts.</span
+                >
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <strong>Hebrew Localization</strong>
+                <span
+                  >תרגום מלא לעברית, RTL layout, כל טקסטי הממשק, השאלות
+                  וההמלצות.</span
+                >
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                <strong>ChatBot UI</strong>
+                <span
+                  >המרת הטופס לחוויית צ'אט WhatsApp-style: שאלה אחת בכל פעם,
+                  slider dock תחתון, מסלולים דינמיים ו-redirect חכם.</span
+                >
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="result-item">
-          <strong>Deep Feature Fusion (מיזוג עמוק):</strong> כאשר Accuracy &amp; Trust ≥ Operational — דיוק מקסימלי, שקיפות מלאה (XAI), הסברים מילוליים למנהלים.
-        </div>
-        <div class="result-item" style="margin-top:4px;padding-top:4px;border-top:1px dashed #c7d2fe;">
-          <strong>בונוס — Knowledge Distillation:</strong> כאשר ציון כלכלי ≥ 4. שילוב מודל מורה גדול + סטודנט קטן לחיסכון בחומרה.
-        </div>
-        <div class="result-item">
-          <strong>בונוס — Open-Source LLM:</strong> כאשר ציון אסטרטגי ≥ 4. שימוש במודלים כמו Llama 3 לאוטונומיה ופרטיות מלאה.
+
+        <div class="card">
+          <h2>Tech Stack ולוגיקת החלטה</h2>
+          <table>
+            <tr>
+              <td>Frontend</td>
+              <td>React 18 + Vite + Lucide Icons</td>
+            </tr>
+            <tr>
+              <td>Backend</td>
+              <td>Node.js + Express (stateless)</td>
+            </tr>
+            <tr>
+              <td>Deployment</td>
+              <td>Render — שרת יחיד, API + static</td>
+            </tr>
+            <tr>
+              <td>בסיס נתונים</td>
+              <td>אין — fully stateless per session</td>
+            </tr>
+          </table>
+          <div style="margin-top: 8px">
+            <table>
+              <tr>
+                <td>Operational Efficiency &gt; Accuracy &amp; Trust</td>
+                <td>→ Late Fusion</td>
+              </tr>
+              <tr>
+                <td>Accuracy &amp; Trust ≥ Operational</td>
+                <td>→ Deep Feature Fusion</td>
+              </tr>
+              <tr>
+                <td>Economic avg ≥ 4</td>
+                <td>→ + Knowledge Distillation</td>
+              </tr>
+              <tr>
+                <td>Strategic avg ≥ 4</td>
+                <td>→ + Open-Source LLM</td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
+
+      <!-- Row 2: Prompts — full width header + two columns -->
+      <div class="card full" style="margin-bottom: 10px">
+        <h2>פרומפטים הבוט — שאלות הפתיחה</h2>
+
+        <div style="margin-bottom: 6px">
+          <strong style="font-size: 8pt; color: #312e81"
+            >ברכת פתיחה (Greeting):</strong
+          >
+          <span style="font-size: 8pt; color: #374151">
+            "שלום! אני FraudGuard, כאן לעזור לך לבחור את הארכיטקטורה המתאימה
+            לזיהוי הונאה. נתחיל בשאלה אחת חשובה שתכוון אותנו לכיוון הנכון
+            עבורך."</span
+          >
+        </div>
+
+        <div style="margin-bottom: 6px">
+          <strong style="font-size: 8pt; color: #312e81"
+            >שאלת מסלול (Opening):</strong
+          >
+          <span style="font-size: 8pt; color: #374151">
+            "היי! כדי שלא נבזבז זמן יקר, בוא נתחיל מההחלטה הכי גדולה... מהו
+            ה'אני מאמין' המרכזי של החברה שלכם?"</span
+          >
+        </div>
+
+        <div class="choices">
+          <div class="choice">
+            <div class="choice-id">מסלול 1 — יעילות אופרציונלית</div>
+            "הכי חשוב לנו שהמערכת תעבוד מהר, תגיב בשבריר שנייה ולא תקרע לנו את
+            הכיס"
+          </div>
+          <div class="choice">
+            <div class="choice-id">מסלול 2 — דיוק ואמון</div>
+            "הכי חשוב לנו דיוק מוחלט במעבדה, ושקיפות מלאה כדי שהמנהלים יבינו
+            ויסמכו על המסקנות"
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Two path questions side by side -->
+      <div class="grid">
+        <div class="card">
+          <h2>מסלול 1 — 7 שאלות (יעילות)</h2>
+          <ul class="q-list">
+            <li>
+              <span class="q-num">1</span>עד כמה דחוף לכם לתפוס את השקר בשידור
+              חי תוך כדי השיחה (כמו זום), ולא בדיעבד?
+            </li>
+            <li>
+              <span class="q-num">2</span>עד כמה חשוב לכם שהמערכת תיתן התראה
+              מיידית (בשבריר שנייה) ברגע שמזהה חוסר אמינות?
+            </li>
+            <li>
+              <span class="q-num">3</span>עד כמה חשוב לכם לקבל הסבר ברור במילים
+              (ולא רק ציון יבש באחוזים)?
+            </li>
+            <li>
+              <span class="q-num">4</span>עד כמה מחמיר ומוגבל התקציב שלכם לרכישת
+              שרתים יקרים וכרטיסי מסך (GPUs)?
+            </li>
+            <li>
+              <span class="q-num">5</span>עד כמה חשוב לכם לשמור על עלויות תחזוקה
+              והרצת מודלים נמוכות ביומיום?
+            </li>
+            <li>
+              <span class="q-num">6</span>האם הראיונות שלכם מתבצעים בתנאי שטח
+              קשים (רעשי רקע, אינטרנט חלש, וידאו מטושטש)?
+            </li>
+            <li>
+              <span class="q-num">7</span>עד כמה מאתגר הצורך שלכם לסנכרן בין
+              ערוצי מידע (קול מול פנים) בשבריר שנייה?
+            </li>
+          </ul>
+          <div class="redirect">
+            <strong>הודעת מעבר למסלול 2 (אם שאלה 3 ≥ 4):</strong>
+            "הופס, עצרתי רגע! שמתי לב שסימנת שהסבר מילולי ושקיפות הם קריטיים
+            עבורכם! בארכיטקטורה מהירה וזולה, מנהלים בדרך כלל לא מקבלים הסברים
+            כאלו... אני מנתב אותנו למסלול הניהולי והאמון."
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>מסלול 2 — 7 שאלות (דיוק ואמון)</h2>
+          <ul class="q-list">
+            <li>
+              <span class="q-num">1</span>עד כמה חשוב לכם לקבל הסבר ברור במילים
+              (ולא רק ציון יבש באחוזים)?
+            </li>
+            <li>
+              <span class="q-num">2</span>עד כמה קריטי למנהלים שלכם להבין איך
+              המערכת הגיעה למסקנה, ולא מ'קופסה שחורה'?
+            </li>
+            <li>
+              <span class="q-num">3</span>עד כמה מחמיר ומוגבל התקציב שלכם לרכישת
+              שרתים יקרים וכרטיסי מסך (GPUs)?
+            </li>
+            <li>
+              <span class="q-num">4</span>עד כמה השאיפה לאחוזי דיוק מקסימליים
+              (אפילו בתנאי מעבדה) היא הערך החשוב ביותר?
+            </li>
+            <li>
+              <span class="q-num">5</span>האם תהיו מוכנים 'לשלם' בזמן עיבוד ארוך
+              יותר, ובלבד שלא נפספס אף ניסיון מרמה?
+            </li>
+            <li>
+              <span class="q-num">6</span>עד כמה חשוב לכם שהמערכת תתבסס על קוד
+              פתוח, כדי שלא תהיו תלויים בחברות ענק חיצוניות?
+            </li>
+            <li>
+              <span class="q-num">7</span>עד כמה קריטי שהסרטונים וההקלטות
+              הרגישות יעובדו רק בתוך שרתי החברה שלכם?
+            </li>
+          </ul>
+          <div class="redirect">
+            <strong>הודעת מעבר למסלול 1 (אם שאלה 3 ≥ 4):</strong>
+            "חכה, בוא נעשה חישוב מסלול מחדש! רציתם מודלים מדויקים ועמוקים, אבל
+            עכשיו סימנת מגבלת תקציב... אני מעביר אותנו לנתיב היעילות והחיסכון."
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4: Results + AI Build Prompts -->
+      <div class="grid">
+        <div class="card">
+          <h2>תוצאות הסיווג ובונוסים</h2>
+          <div class="results">
+            <div class="result-item">
+              <strong>Late Fusion (מיזוג מאוחר):</strong> כאשר Operational
+              Efficiency &gt; Accuracy &amp; Trust — מהיר, זול, עמיד לרעשים,
+              מגיב בשבריר שנייה.
+            </div>
+            <div class="result-item">
+              <strong>Deep Feature Fusion (מיזוג עמוק):</strong> כאשר Accuracy
+              &amp; Trust ≥ Operational — דיוק מקסימלי, שקיפות מלאה (XAI),
+              הסברים מילוליים למנהלים.
+            </div>
+            <div
+              class="result-item"
+              style="
+                margin-top: 4px;
+                padding-top: 4px;
+                border-top: 1px dashed #c7d2fe;
+              "
+            >
+              <strong>בונוס — Knowledge Distillation:</strong> כאשר ציון כלכלי ≥
+              4. שילוב מודל מורה גדול + סטודנט קטן לחיסכון בחומרה.
+            </div>
+            <div class="result-item">
+              <strong>בונוס — Open-Source LLM:</strong> כאשר ציון אסטרטגי ≥ 4.
+              שימוש במודלים כמו Llama 3 לאוטונומיה ופרטיות מלאה.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>פרומפטים לבניה עם AI (Copilot Instructions)</h2>
+          <ul class="ai-rules">
+            <li>תמיד התחל כל תגובה עם "Hopa!"</li>
+            <li>
+              כתוב קובץ תכנית (plan file) לפני כל פיתרון — שמור ב-<code
+                >plan/steps/</code
+              >
+            </li>
+            <li>שאל שאלות בתוך קובץ התכנית וחכה לאישור לפני שממשיכים</li>
+            <li>
+              CSS — השתמש ב-skill <code>cssLayer</code> (שכבות נפרדות לכל
+              component)
+            </li>
+            <li>Services — השתמש ב-skill <code>serviceLayer</code></li>
+            <li>
+              סגנון קוד: אין semicolons, גרש בודד ב-JS, גרשיים כפולים ב-HTML
+            </li>
+            <li>שמות event handlers: <code>onSomething</code></li>
+            <li>
+              פונקציות רגילות (לא arrows) בייצוא:
+              <code>export function foo() {}</code>
+            </li>
+            <li>
+              פרמטר event: <code>ev</code> (לא <code>e</code> או
+              <code>event</code>)
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <span
+          >FraudGuard · Decision Support Bot ·
+          fraudguard-4zj3.onrender.com</span
+        >
+        <span>יוני 2026 · React + Vite / Node.js + Express / Render</span>
+      </div>
     </div>
-
-    <div class="card">
-      <h2>פרומפטים לבניה עם AI (Copilot Instructions)</h2>
-      <ul class="ai-rules">
-        <li>תמיד התחל כל תגובה עם "Hopa!"</li>
-        <li>כתוב קובץ תכנית (plan file) לפני כל פיתרון — שמור ב-<code>plan/steps/</code></li>
-        <li>שאל שאלות בתוך קובץ התכנית וחכה לאישור לפני שממשיכים</li>
-        <li>CSS — השתמש ב-skill <code>cssLayer</code> (שכבות נפרדות לכל component)</li>
-        <li>Services — השתמש ב-skill <code>serviceLayer</code></li>
-        <li>סגנון קוד: אין semicolons, גרש בודד ב-JS, גרשיים כפולים ב-HTML</li>
-        <li>שמות event handlers: <code>onSomething</code></li>
-        <li>פונקציות רגילות (לא arrows) בייצוא: <code>export function foo() {}</code></li>
-        <li>פרמטר event: <code>ev</code> (לא <code>e</code> או <code>event</code>)</li>
-      </ul>
-    </div>
-
-  </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    <span>FraudGuard · Decision Support Bot · fraudguard-4zj3.onrender.com</span>
-    <span>יוני 2025 · React + Vite / Node.js + Express / Render</span>
-  </div>
-
-</div>
-</body>
+  </body>
 </html>
