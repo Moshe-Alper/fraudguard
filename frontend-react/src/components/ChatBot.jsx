@@ -35,6 +35,7 @@ const PATHS = {
     redirectAt: 2,
     redirectThreshold: 4,
     redirectTo: 'path2',
+    redirectStartAt: 3,
     redirectMsg: 'הופס, עצרתי רגע! שמתי לב שסימנת שהסבר מילולי ושקיפות הם קריטיים עבורכם! בארכיטקטורה מהירה וזולה, מנהלים בדרך כלל לא מקבלים הסברים כאלו כי המודל עובד כמו קופסה שחורה. מאחר ואני רוצה שלא תתפשר על האמון והדיוק של המנהלים, אני מנתב אותנו למסלול הניהולי והאמון. בוא נראה מה קורה אצלכם באבטחת המידע...',
   },
   path2: {
@@ -50,6 +51,7 @@ const PATHS = {
     redirectAt: 2,
     redirectThreshold: 4,
     redirectTo: 'path1',
+    redirectStartAt: 4,
     redirectMsg: 'חכה, בוא נעשה חישוב מסלול מחדש! רציתם את המודלים המדויקים והעמוקים ביותר שיש, אבל עכשיו סימנת לי שיש לכם מגבלת תקציב חישקית להרצה. מודלים עמוקים הם כבדים ויקרים מאוד לרכישה. כדי שלא תקבלו המלצה שתקרוס לכם בתקציב או תגיב לאט, אני מעביר אותנו לנתיב היעילות והחיסכון. בואו נבדוק מה קורה אצלכם מבחינת תנאי השטח המבצעיים...',
   },
 }
@@ -136,8 +138,9 @@ export default function ChatBot() {
         setMessages(prev => [...prev, botMsg(path.redirectMsg)])
         // isConfirming stays true until new question appears to block slider interaction
         setTimeout(() => {
-          setMessages(prev => [...prev, botMsg(PATHS[newPathId].questions[3])])
-          setQuestionIndex(3)
+          const startAt = path.redirectStartAt
+          setMessages(prev => [...prev, botMsg(PATHS[newPathId].questions[startAt])])
+          setQuestionIndex(startAt)
           setPendingValue(3)
           setIsConfirming(false)
         }, 900)
