@@ -18,7 +18,7 @@ export default function ChatMessage({ message }) {
   }
 
   if (message.type === 'result') {
-    if (!message.bonusData?.length) return null
+    if (!message.resultData?.scores && !message.bonusData?.length) return null
     return (
       <div className="chat-bubble-row chat-bubble-row--bot">
         <RobotAvatar />
