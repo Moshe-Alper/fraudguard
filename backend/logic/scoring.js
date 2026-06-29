@@ -40,10 +40,10 @@ function calculateRecommendation({ path, answers }) {
   const accuracyAndTrust = avg(answers, [1, 2, 3, 4])
 
   const bonuses = []
-  if (economic >= 4) {
+  if (economic >= 4 && path === 'path1') {
     bonuses.push({ type: 'knowledgeDistillation', text: BONUS_TEXTS.knowledgeDistillation })
   }
-  if (strategic >= 4) {
+  if (strategic >= 4 && path === 'path2') {
     bonuses.push({ type: 'openSourceLLM', text: BONUS_TEXTS.openSourceLLM })
   }
 
